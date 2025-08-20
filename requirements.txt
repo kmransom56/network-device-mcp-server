@@ -1,0 +1,6 @@
+# Network Device MCP Server Requirements
+mcp>=1.0.0
+httpx>=0.25.0
+python-dotenv>=1.0.0
+asyncio>=3.4.3
+typing>=3.7.4.3
