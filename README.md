@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Network Device Management MCP Server
 
 A comprehensive Model Context Protocol (MCP) server for managing FortiGate, FortiManager, and Cisco Meraki network devices. Built specifically for automation and integration with Claude Desktop and Power Automate workflows.
@@ -310,3 +311,6 @@ The MCP server can serve as a unified API layer across all these projects!
 MIT License - Feel free to modify and extend for your needs.
 
 Built for network administrators who want to automate device management and integrate with modern AI tools like Claude and Power Automate.
+=======
+"# Network Device MCP Server" 
+>>>>>>> 1b9d93f (first commit)
