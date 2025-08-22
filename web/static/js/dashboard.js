@@ -77,6 +77,11 @@ function showSection(sectionId) {
         // Update active nav button
         event?.target?.classList.add('active');
         
+        // Voice feedback for navigation
+        if (typeof announceNavigationChange === 'function') {
+            announceNavigationChange(sectionId);
+        }
+        
         // Load section-specific data
         loadSectionData(sectionId);
     }
@@ -639,6 +644,11 @@ function showLoading(show, text = 'Processing...') {
     if (show) {
         loadingText.textContent = text;
         overlay.classList.add('show');
+        
+        // Voice feedback for loading states
+        if (typeof announceLoading === 'function') {
+            announceLoading(text);
+        }
     } else {
         overlay.classList.remove('show');
     }
@@ -663,6 +673,11 @@ function showToast(message, type = 'info') {
     `;
     
     container.appendChild(toast);
+    
+    // Voice feedback for important toasts
+    if (typeof announceToast === 'function') {
+        announceToast(message, type);
+    }
     
     // Auto-remove after 5 seconds
     setTimeout(() => {
