@@ -159,11 +159,32 @@ async function loadOverviewData() {
  * Update statistics grid
  */
 function updateStatsGrid(data) {
-    // Mock data for demonstration - replace with actual API data
-    document.getElementById('totalStores').textContent = '347';
-    document.getElementById('securityEvents').textContent = '1,234';
-    document.getElementById('blockedUrls').textContent = '8,567';
-    document.getElementById('healthyDevices').textContent = '342';
+    // Extract real data from FortiManager instances
+    if (data && data.fortimanager_instances) {
+        let totalDevices = 0;
+        let onlineDevices = 0;
+        
+        data.fortimanager_instances.forEach(fm => {
+            // Count devices from each FortiManager if device data is available
+            if (fm.managed_devices) {
+                totalDevices += fm.managed_devices.length || 0;
+                onlineDevices += fm.managed_devices.filter(d => d.status === 'online').length || 0;
+            }
+        });
+        
+        document.getElementById('totalStores').textContent = totalDevices.toString();
+        document.getElementById('healthyDevices').textContent = onlineDevices.toString();
+        
+        // Set placeholders for metrics we don't have yet
+        document.getElementById('securityEvents').textContent = '-';
+        document.getElementById('blockedUrls').textContent = '-';
+    } else {
+        // No data available - show dashes instead of fake numbers
+        document.getElementById('totalStores').textContent = '-';
+        document.getElementById('securityEvents').textContent = '-';
+        document.getElementById('blockedUrls').textContent = '-';
+        document.getElementById('healthyDevices').textContent = '-';
+    }
 }
 
 /**
@@ -629,7 +650,19 @@ async function apiCall(endpoint, options = {}) {
             ...options
         });
         
-        return await response.json();
+        const data = await response.json();
+        
+        // Check if response is successful
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${data.error || response.statusText}`);
+        }
+        
+        // Check if the API returned an error in the response body
+        if (data.success === false) {
+            throw new Error(data.error || 'API request failed');
+        }
+        
+        return data;
     } catch (error) {
         console.error('API call failed:', error);
         throw error;

@@ -116,9 +116,43 @@ def get_ltm_system():
 async def call_mcp_tool(tool_name: str, arguments: dict):
     """Call MCP tool and return JSON result"""
     try:
-        server = get_mcp_server()
-        # Use the server's call_tool handler
-        result = await server._NetworkDeviceMCPServer__handle_call_tool(tool_name, arguments)
+        server_instance = get_mcp_server()
+        
+        # Route to the appropriate handler based on tool name
+        if tool_name == "list_fortimanager_instances":
+            result = await server_instance._list_fortimanager_instances(arguments)
+        elif tool_name == "get_fortimanager_devices":
+            result = await server_instance._get_fortimanager_devices(arguments)
+        elif tool_name == "get_policy_packages":
+            result = await server_instance._get_policy_packages(arguments)
+        elif tool_name == "install_policy_package":
+            result = await server_instance._install_policy_package(arguments)
+        elif tool_name == "get_network_infrastructure_summary":
+            result = await server_instance._get_network_infrastructure_summary(arguments)
+        elif tool_name == "show_configuration_status":
+            result = await server_instance._show_configuration_status(arguments)
+        elif tool_name == "list_fortigate_devices":
+            result = await server_instance._list_fortigate_devices(arguments)
+        elif tool_name == "get_fortigate_system_status":
+            result = await server_instance._get_fortigate_system_status(arguments)
+        elif tool_name == "get_meraki_organizations":
+            result = await server_instance._get_meraki_organizations(arguments)
+        elif tool_name == "get_meraki_networks":
+            result = await server_instance._get_meraki_networks(arguments)
+        elif tool_name == "get_meraki_devices":
+            result = await server_instance._get_meraki_devices(arguments)
+        elif tool_name == "get_brand_store_summary":
+            result = await server_instance._get_brand_store_summary(arguments)
+        elif tool_name == "list_supported_brands":
+            result = await server_instance._list_supported_brands(arguments)
+        elif tool_name == "get_store_security_health":
+            result = await server_instance._get_store_security_health(arguments)
+        elif tool_name == "analyze_url_blocking_patterns":
+            result = await server_instance._analyze_url_blocking_patterns(arguments)
+        elif tool_name == "get_security_event_summary":
+            result = await server_instance._get_security_event_summary(arguments)
+        else:
+            return {"success": False, "error": f"Unknown tool: {tool_name}"}
         
         if result and hasattr(result[0], 'text'):
             return {"success": True, "data": json.loads(result[0].text)}

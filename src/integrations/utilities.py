@@ -440,14 +440,9 @@ class NetworkUtilities:
             
             for line in lines:
                 if 'Device found:' in line:
-                    # Parse device information from output
-                    device_info = {
-                        "ip_address": "192.168.1.1",  # Placeholder
-                        "device_type": "FortiGate",
-                        "model": "FortiGate-60F",
-                        "serial": "FGT60F1234567890"
-                    }
-                    devices.append(device_info)
+                    # TODO: Parse device information from actual network discovery output
+                    # Skip until real device discovery is implemented
+                    continue
             
             return devices
             

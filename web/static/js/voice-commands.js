@@ -422,24 +422,21 @@ class VoiceCommands {
         const investigation = this.activeInvestigation;
         if (!investigation) return;
         
-        // Mock results announcement - in real implementation, read from investigation results
-        const results = {
-            securityEvents: Math.floor(Math.random() * 50),
-            blockedThreats: Math.floor(Math.random() * 20),
-            urlsBlocked: Math.floor(Math.random() * 100)
-        };
-        
-        let announcement = `Investigation complete for ${this.getBrandDisplayName(investigation.brand)} store ${investigation.storeId}. `;
-        announcement += `Found ${results.securityEvents} security events, `;
-        announcement += `${results.blockedThreats} threats blocked, `;
-        announcement += `and ${results.urlsBlocked} URLs filtered.`;
-        
-        if (results.securityEvents > 30) {
-            announcement += ' High activity detected. Recommend immediate review.';
-        } else if (results.securityEvents < 5) {
-            announcement += ' Low activity. System appears secure.';
-        } else {
-            announcement += ' Normal activity levels.';
+        // Read actual investigation results from the dashboard
+        try {
+            const securityEventsElement = document.querySelector('#security-events .events-summary');
+            const urlBlockingElement = document.querySelector('#url-blocking .blocking-stats');
+            
+            let announcement = `Investigation complete for ${this.getBrandDisplayName(investigation.brand)} store ${investigation.storeId}. `;
+            
+            if (securityEventsElement) {
+                announcement += 'Security analysis completed. Check the dashboard for detailed results. ';
+            } else {
+                announcement += 'Investigation completed - review the security, URL blocking, and events tabs for results. ';
+            }
+        } catch (error) {
+            let announcement = `Investigation complete for ${this.getBrandDisplayName(investigation.brand)} store ${investigation.storeId}. `;
+            announcement += 'Review the investigation results in the dashboard tabs for detailed findings.';
         }
         
         this.voiceInterface.speak(announcement);
