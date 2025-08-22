@@ -8,7 +8,29 @@ class VoiceCommands {
         this.voiceInterface = voiceInterface;
         this.activeInvestigation = null;
         this.contextStack = [];
+        this.ltmEnabled = false;
         this.setupAdvancedCommands();
+        this.initializeLTM();
+    }
+    
+    /**
+     * Initialize LTM Intelligence System integration
+     */
+    async initializeLTM() {
+        try {
+            const response = await fetch('/api/ltm/status');
+            const data = await response.json();
+            
+            if (data.success) {
+                this.ltmEnabled = true;
+                console.log('✅ LTM Intelligence System connected');
+                
+                // Add LTM-specific voice commands
+                this.setupLTMCommands();
+            }
+        } catch (error) {
+            console.log('LTM Intelligence System not available:', error.message);
+        }
     }
 
     /**
@@ -57,6 +79,35 @@ class VoiceCommands {
         // Bulk operations
         this.addCommandPattern(/(?:check|investigate|analyze)\s+all\s+(stores|locations|sites)(?:\s+for\s+(.+?))?/,
             this.handleBulkOperation.bind(this));
+    }
+    
+    /**
+     * Setup LTM-specific voice commands
+     */
+    setupLTMCommands() {
+        // Pattern analysis commands
+        this.addCommandPattern(/(?:analyze|show\s+me|find)\s+(?:security\s+)?patterns?(?:\s+in\s+(.+?))?(?:\s+for\s+the\s+last\s+(.+))?/,
+            this.handlePatternAnalysis.bind(this));
+            
+        // Predictive analytics commands
+        this.addCommandPattern(/predict\s+(?:security\s+)?(?:issues|incidents|threats|problems)\s+for\s+(bww|buffalo wild wings|arbys?|arby'?s|sonic)(?:\s+(?:in\s+the\s+)?next\s+(.+?))?/,
+            this.handlePredictiveAnalysis.bind(this));
+            
+        // Learning commands
+        this.addCommandPattern(/(?:what\s+have\s+you\s+)?learn(?:ed)?\s+(?:from\s+)?(.+?)(?:\s+incidents?|\s+events?)?/,
+            this.handleLearningQuery.bind(this));
+            
+        // Correlation commands
+        this.addCommandPattern(/(?:show\s+me\s+)?(?:correlations?|relationships?|connections?)\s+between\s+(.+?)(?:\s+and\s+(.+))?/,
+            this.handleCorrelationAnalysis.bind(this));
+            
+        // Attack path analysis
+        this.addCommandPattern(/(?:show\s+me\s+)?(?:attack\s+paths?|propagation\s+paths?)\s+(?:from\s+(.+?))?(?:\s+to\s+(.+))?/,
+            this.handleAttackPathAnalysis.bind(this));
+            
+        // LTM insights commands
+        this.addCommandPattern(/(?:show\s+me\s+)?(?:ltm\s+)?(?:insights?|analytics?|intelligence)(?:\s+for\s+(.+))?/,
+            this.handleLTMInsights.bind(this));
     }
 
     /**
@@ -590,5 +641,452 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fall back to original processing
             originalProcessCommand.call(this, transcript);
         };
+    }
+
+    // ==============================================================================
+    // LTM INTELLIGENCE COMMAND HANDLERS
+    // Advanced AI-powered voice command processing
+    // ==============================================================================
+
+    /**
+     * Handle pattern analysis requests
+     */
+    async handlePatternAnalysis(matches) {
+        if (!this.ltmEnabled) {
+            this.voiceInterface.speak('LTM intelligence system not available');
+            return;
+        }
+
+        const context = matches[1];
+        const timeframe = matches[2];
+        
+        this.voiceInterface.speak(`Analyzing network patterns using LTM intelligence`);
+        
+        try {
+            let url = '/api/ltm/patterns/analyze';
+            const params = new URLSearchParams();
+            
+            if (timeframe) {
+                const hours = this.parseTimeframeToHours(timeframe);
+                params.append('time_window_hours', hours);
+            }
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.success && data.patterns.length > 0) {
+                this.announcePatternResults(data);
+                this.displayPatternResults(data);
+            } else {
+                this.voiceInterface.speak('No significant patterns detected in the specified timeframe');
+            }
+            
+            // Send to LTM for learning
+            await this.sendVoiceCommandToLTM(matches.input, 'pattern_analysis', true);
+            
+        } catch (error) {
+            console.error('Pattern analysis error:', error);
+            this.voiceInterface.speak('Unable to analyze patterns at this time');
+        }
+    }
+
+    /**
+     * Handle predictive analysis requests
+     */
+    async handlePredictiveAnalysis(matches) {
+        if (!this.ltmEnabled) {
+            this.voiceInterface.speak('LTM intelligence system not available');
+            return;
+        }
+
+        const brand = this.normalizeBrandName(matches[1]);
+        const timeframe = matches[2] || '7 days';
+        
+        this.voiceInterface.speak(`Generating predictive security analysis for ${this.getBrandDisplayName(brand)}`);
+        
+        try {
+            const days = this.parseTimeframeToDays(timeframe);
+            const url = `/api/ltm/predictions/generate?entities=${brand}&time_horizon_days=${days}`;
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.success && data.predictions.length > 0) {
+                this.announcePredictionResults(data);
+                this.displayPredictionResults(data);
+            } else {
+                this.voiceInterface.speak(`No significant predictions for ${this.getBrandDisplayName(brand)} in the next ${timeframe}`);
+            }
+            
+            await this.sendVoiceCommandToLTM(matches.input, 'prediction_request', true);
+            
+        } catch (error) {
+            console.error('Predictive analysis error:', error);
+            this.voiceInterface.speak('Unable to generate predictions at this time');
+        }
+    }
+
+    /**
+     * Handle learning queries
+     */
+    async handleLearningQuery(matches) {
+        if (!this.ltmEnabled) {
+            this.voiceInterface.speak('LTM intelligence system not available');
+            return;
+        }
+
+        const topic = matches[1];
+        
+        this.voiceInterface.speak(`Querying LTM learning database about ${topic}`);
+        
+        try {
+            const response = await fetch('/api/ltm/analytics/insights');
+            const data = await response.json();
+            
+            if (data.success) {
+                this.announceLearningInsights(data, topic);
+            } else {
+                this.voiceInterface.speak('Unable to retrieve learning insights');
+            }
+            
+            await this.sendVoiceCommandToLTM(matches.input, 'learning_query', true);
+            
+        } catch (error) {
+            console.error('Learning query error:', error);
+            this.voiceInterface.speak('Unable to access learning database');
+        }
+    }
+
+    /**
+     * Handle attack path analysis
+     */
+    async handleAttackPathAnalysis(matches) {
+        if (!this.ltmEnabled) {
+            this.voiceInterface.speak('LTM intelligence system not available');
+            return;
+        }
+
+        const source = matches[1];
+        const target = matches[2];
+        
+        this.voiceInterface.speak('Analyzing potential attack paths using network graph intelligence');
+        
+        try {
+            let url = '/api/ltm/graph/attack-paths';
+            const params = new URLSearchParams();
+            
+            if (source) params.append('source_entities', source);
+            if (target) params.append('target_entities', target);
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.success && data.attack_paths.length > 0) {
+                this.announceAttackPathResults(data);
+            } else {
+                this.voiceInterface.speak('No significant attack paths identified');
+            }
+            
+            await this.sendVoiceCommandToLTM(matches.input, 'graph_analysis', true);
+            
+        } catch (error) {
+            console.error('Attack path analysis error:', error);
+            this.voiceInterface.speak('Unable to analyze attack paths');
+        }
+    }
+
+    /**
+     * Handle LTM insights requests
+     */
+    async handleLTMInsights(matches) {
+        if (!this.ltmEnabled) {
+            this.voiceInterface.speak('LTM intelligence system not available');
+            return;
+        }
+
+        const context = matches[1];
+        
+        this.voiceInterface.speak('Retrieving comprehensive LTM intelligence insights');
+        
+        try {
+            const response = await fetch('/api/ltm/analytics/insights');
+            const data = await response.json();
+            
+            if (data.success) {
+                this.announceComprehensiveInsights(data);
+                this.displayLTMDashboard(data);
+            } else {
+                this.voiceInterface.speak('Unable to retrieve LTM insights');
+            }
+            
+            await this.sendVoiceCommandToLTM(matches.input, 'ltm_insights', true);
+            
+        } catch (error) {
+            console.error('LTM insights error:', error);
+            this.voiceInterface.speak('Unable to access LTM insights');
+        }
+    }
+
+    /**
+     * Send voice command to LTM for learning
+     */
+    async sendVoiceCommandToLTM(command, intent, success) {
+        if (!this.ltmEnabled) return;
+        
+        try {
+            await fetch('/api/ltm/voice/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    command: command,
+                    context: {
+                        current_section: this.getCurrentSection(),
+                        active_investigation: this.activeInvestigation
+                    },
+                    feedback: success ? 'positive' : 'negative'
+                })
+            });
+        } catch (error) {
+            console.error('Error sending command to LTM:', error);
+        }
+    }
+
+    // ==============================================================================
+    // LTM RESULT ANNOUNCEMENT METHODS
+    // ==============================================================================
+
+    /**
+     * Announce pattern analysis results
+     */
+    announcePatternResults(data) {
+        let announcement = `Pattern analysis complete. `;
+        announcement += `Detected ${data.patterns_detected} patterns. `;
+        
+        if (data.summary.high_confidence_patterns > 0) {
+            announcement += `${data.summary.high_confidence_patterns} high-confidence patterns found. `;
+        }
+        
+        if (data.summary.critical_severity > 0) {
+            announcement += `${data.summary.critical_severity} critical severity patterns require attention. `;
+        }
+        
+        const topPattern = data.patterns[0];
+        if (topPattern) {
+            announcement += `Top pattern: ${topPattern.type} with ${Math.round(topPattern.confidence * 100)}% confidence.`;
+        }
+        
+        this.voiceInterface.speak(announcement);
+    }
+
+    /**
+     * Announce prediction results
+     */
+    announcePredictionResults(data) {
+        let announcement = `Predictive analysis complete. `;
+        announcement += `Generated ${data.predictions_generated} predictions for the next ${data.time_horizon_days} days. `;
+        
+        if (data.summary.high_confidence_predictions > 0) {
+            announcement += `${data.summary.high_confidence_predictions} high-confidence predictions. `;
+        }
+        
+        if (data.summary.critical_predictions > 0) {
+            announcement += `${data.summary.critical_predictions} critical predictions require immediate attention. `;
+        }
+        
+        const topPrediction = data.predictions[0];
+        if (topPrediction) {
+            announcement += `Highest probability: ${topPrediction.type} with ${Math.round(topPrediction.probability * 100)}% likelihood.`;
+        }
+        
+        this.voiceInterface.speak(announcement);
+    }
+
+    /**
+     * Announce learning insights
+     */
+    announceLearningInsights(data, topic) {
+        const stats = data.ltm_analytics.memory_statistics;
+        let announcement = `LTM has learned from ${stats.total_events || 0} network events, `;
+        announcement += `detected ${stats.total_patterns || 0} patterns, `;
+        announcement += `and processed ${stats.total_voice_interactions || 0} voice interactions. `;
+        
+        const voiceSuccessRate = Math.round((stats.voice_success_rate || 0) * 100);
+        announcement += `Voice command success rate: ${voiceSuccessRate}%. `;
+        
+        if (data.ltm_analytics.voice_insights.length > 0) {
+            const topInsight = data.ltm_analytics.voice_insights[0];
+            announcement += `Key insight: ${topInsight.description}`;
+        }
+        
+        this.voiceInterface.speak(announcement);
+    }
+
+    /**
+     * Announce attack path results
+     */
+    announceAttackPathResults(data) {
+        let announcement = `Attack path analysis complete. `;
+        announcement += `Analyzed ${data.attack_paths_analyzed} potential paths. `;
+        
+        if (data.summary.high_risk_paths > 0) {
+            announcement += `${data.summary.high_risk_paths} high-risk attack paths identified. `;
+        }
+        
+        if (data.summary.short_attack_paths > 0) {
+            announcement += `${data.summary.short_attack_paths} paths with 3 or fewer hops require immediate attention. `;
+        }
+        
+        const topPath = data.attack_paths[0];
+        if (topPath) {
+            announcement += `Highest risk path: ${topPath.shortest_path_length} hops with risk score ${Math.round(topPath.risk_score * 100)}.`;
+        }
+        
+        this.voiceInterface.speak(announcement);
+    }
+
+    /**
+     * Announce comprehensive LTM insights
+     */
+    announceComprehensiveInsights(data) {
+        const recent = data.ltm_analytics.recent_activity;
+        let announcement = `LTM intelligence summary: `;
+        announcement += `${recent.patterns_detected_24h} patterns detected in last 24 hours, `;
+        announcement += `${recent.predictions_generated} predictions generated. `;
+        
+        if (recent.critical_predictions > 0) {
+            announcement += `${recent.critical_predictions} critical predictions require attention. `;
+        }
+        
+        announcement += `System learning effectiveness is optimal with continuous pattern recognition active.`;
+        
+        this.voiceInterface.speak(announcement);
+    }
+
+    // ==============================================================================
+    // LTM RESULT DISPLAY METHODS
+    // ==============================================================================
+
+    /**
+     * Display pattern results in dashboard
+     */
+    displayPatternResults(data) {
+        this.createLTMResultsSection('Pattern Analysis Results', data.patterns.map(p => ({
+            title: `${p.type} (${Math.round(p.confidence * 100)}% confidence)`,
+            description: p.description,
+            severity: p.severity,
+            recommendations: p.recommendations
+        })));
+    }
+
+    /**
+     * Display prediction results in dashboard
+     */
+    displayPredictionResults(data) {
+        this.createLTMResultsSection('Predictive Analytics Results', data.predictions.map(p => ({
+            title: `${p.type} (${Math.round(p.probability * 100)}% probability)`,
+            description: p.description,
+            severity: p.severity,
+            businessImpact: p.business_impact,
+            recommendations: p.recommendations
+        })));
+    }
+
+    /**
+     * Display LTM dashboard
+     */
+    displayLTMDashboard(data) {
+        console.log('LTM Dashboard Data:', data);
+        // Implementation would create visual dashboard elements
+    }
+
+    /**
+     * Create LTM results section
+     */
+    createLTMResultsSection(title, results) {
+        const section = document.createElement('div');
+        section.className = 'ltm-results-section';
+        section.innerHTML = `
+            <h3>${title}</h3>
+            <div class="ltm-results-grid">
+                ${results.map(result => `
+                    <div class="ltm-result-card ${result.severity || 'info'}">
+                        <h4>${result.title}</h4>
+                        <p>${result.description}</p>
+                        ${result.recommendations ? `
+                            <div class="recommendations">
+                                <strong>Recommendations:</strong>
+                                <ul>${result.recommendations.map(rec => `<li>${rec}</li>`).join('')}</ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        const mainContent = document.querySelector('.main-content .content-section.active');
+        if (mainContent) {
+            const existingResults = mainContent.querySelector('.ltm-results-section');
+            if (existingResults) {
+                existingResults.replaceWith(section);
+            } else {
+                mainContent.appendChild(section);
+            }
+        }
+    }
+
+    // ==============================================================================
+    // UTILITY METHODS FOR LTM
+    // ==============================================================================
+
+    /**
+     * Parse timeframe string to hours
+     */
+    parseTimeframeToHours(timeframe) {
+        const match = timeframe.match(/(\d+)\s*(hour|day|week)s?/i);
+        if (!match) return 24;
+        
+        const value = parseInt(match[1]);
+        const unit = match[2].toLowerCase();
+        
+        switch (unit) {
+            case 'hour': return value;
+            case 'day': return value * 24;
+            case 'week': return value * 24 * 7;
+            default: return 24;
+        }
+    }
+
+    /**
+     * Parse timeframe string to days
+     */
+    parseTimeframeToDays(timeframe) {
+        const match = timeframe.match(/(\d+)\s*(day|week|month)s?/i);
+        if (!match) return 7;
+        
+        const value = parseInt(match[1]);
+        const unit = match[2].toLowerCase();
+        
+        switch (unit) {
+            case 'day': return value;
+            case 'week': return value * 7;
+            case 'month': return value * 30;
+            default: return 7;
+        }
+    }
+
+    /**
+     * Get current dashboard section
+     */
+    getCurrentSection() {
+        const activeSection = document.querySelector('.content-section.active');
+        return activeSection ? activeSection.id : 'overview';
     }
 });
