@@ -99,6 +99,15 @@ async function loadSectionData(sectionId) {
         case 'overview':
             await loadOverviewData();
             break;
+        case 'fortianalyzer':
+            await loadFortiAnalyzerData();
+            break;
+        case 'webfilters':
+            await loadWebFiltersData();
+            break;
+        case 'log-analysis':
+            // Log analysis section is form-based, no initial data load needed
+            break;
         case 'fortimanager':
             await loadFortiManagerData();
             break;
