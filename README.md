@@ -1,316 +1,287 @@
-<<<<<<< HEAD
-# Network Device Management MCP Server
+# Voice-Enabled Network Management Platform
 
-A comprehensive Model Context Protocol (MCP) server for managing FortiGate, FortiManager, and Cisco Meraki network devices. Built specifically for automation and integration with Claude Desktop and Power Automate workflows.
+A professional NOC-style Voice-Enabled Network Management Platform for restaurant chain infrastructure with AI-powered analytics, LTM Intelligence System, and hands-free operation capabilities.
+
+![Platform Overview](docs/images/noc-dashboard-overview.png)
+*Professional NOC interface with sidebar navigation and real-time statistics*
 
 ## 🚀 Features
 
-### Supported Platforms
-- **FortiGate**: Direct device management via REST API
-- **FortiManager**: Centralized management via JSON-RPC API  
-- **Cisco Meraki**: Cloud management via Dashboard API
+### 🎤 Voice-Controlled Operations
+- **Hands-free navigation** - "Show Buffalo Wild Wings", "Investigate store 155"
+- **Voice feedback** - Audio announcements for system status and results
+- **Accessibility support** - Screen reader compatible with WCAG 2.1 AA compliance
 
-### Core Capabilities
-- **Device Status Monitoring**: Real-time system status, interfaces, and performance metrics
-- **Configuration Management**: View and modify device configurations
-- **Policy Management**: Firewall policies, VPN tunnels, and security rules
-- **Network Discovery**: Automatic device discovery and inventory
-- **Security Events**: Monitor and analyze security logs and events
-- **Multi-Platform Reports**: Unified view across all managed devices
+![Voice Interface](docs/images/voice-controls.png)
+*Voice control interface with microphone controls and status indicators*
 
-## 📋 Requirements
+### 🧠 LTM Intelligence System
+- **Pattern Recognition Engine** - 8 threat pattern types with real-time detection
+- **Predictive Analytics** - 6 prediction models for proactive maintenance
+- **Network Graph Intelligence** - Attack path analysis and impact modeling
+- **Voice Learning Engine** - Adaptive NLP for improved voice interaction
 
-- Python 3.8 or higher
-- Claude Desktop (for MCP integration)
-- Network access to your devices
-- Valid API credentials for each platform
+### 🏪 Multi-Brand Restaurant Support
+- **Buffalo Wild Wings** - Complete network infrastructure management
+- **Arby's** - Security monitoring and device health tracking  
+- **Sonic Drive-In** - Performance analytics and compliance reporting
+- **Unified Dashboard** - Single interface for all restaurant brands
 
-## 🔧 Installation
+![Brand Dashboard](docs/images/brand-overview.png)
+*Brand-specific network overview with infrastructure status and security metrics*
+
+### 🔧 Network Management Tools
+- **FortiManager Integration** - Device provisioning and policy management
+- **FortiAnalyzer Support** - Log analysis and threat intelligence
+- **Web Filters Management** - Content filtering and SSL inspection
+- **Store Investigation** - Deep-dive analysis for specific locations
+
+![Store Investigation](docs/images/store-investigation.png)
+*Comprehensive store investigation interface with security health analysis*
+
+## 📱 Interface Screenshots
+
+### NOC-Style Dashboard
+![NOC Dashboard](docs/images/noc-full-interface.png)
+*Complete NOC interface showing sidebar navigation, main dashboard, and status displays*
+
+### Mobile Responsive Design
+<div style="display: flex; gap: 20px;">
+
+![Mobile View 1](docs/images/mobile-dashboard.png)
+![Mobile View 2](docs/images/mobile-navigation.png)
+
+</div>
+
+*Responsive design optimized for mobile devices and tablets*
+
+### Dark Theme Professional Interface
+![Dark Theme](docs/images/dark-theme-details.png)
+*Professional dark theme optimized for 24/7 NOC operations*
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+- **Python 3.8+** with required packages
+- **Node.js 16+** (optional, for enhanced features)
+- **Network access** to restaurant infrastructure
+- **Modern browser** with Web Speech API support
 
 ### Quick Start
-1. **Clone/Download** this repository to `C:\Users\keith.ransom\network-device-mcp-server`
-2. **Run the installer**:
-   ```cmd
-   install.bat
-   ```
-3. **Configure your devices**:
-   ```cmd
-   notepad config\devices.json.user
-   ```
-4. **Add to Claude Desktop**:
-   ```cmd
-   setup-claude-config.bat
-   ```
-5. **Test the server**:
-   ```cmd
-   test-server.bat
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/your-org/network-device-mcp-server.git
+cd network-device-mcp-server
 
-### Manual Installation
-```cmd
-# Create virtual environment
-python -m venv venv
-venv\Scripts\activate.bat
-
-# Install dependencies
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Copy configuration template
-copy config\devices.json config\devices.json.user
+# Configure environment
+cp .env.example .env
+# Edit .env with your FortiManager credentials
+
+# Start the platform
+python rest_api_server.py
 ```
 
-## ⚙️ Configuration
+### Access the Platform
+- **Main Interface**: http://localhost:5000
+- **Health Check**: http://localhost:5000/health
+- **API Documentation**: http://localhost:5000/api
 
-Edit `config/devices.json.user` with your actual device credentials:
+## 🎯 Usage Guide
 
-### FortiGate Configuration
+### Voice Commands
+Enable voice control and use natural language commands:
+
+```
+"Show Buffalo Wild Wings"
+"Investigate BWW store 155" 
+"Show security dashboard"
+"Generate security report"
+"Check system status"
+```
+
+![Voice Commands Demo](docs/images/voice-commands-demo.png)
+*Voice command interface with real-time speech recognition*
+
+### Store Investigation Workflow
+1. **Select Brand** - Choose BWW, Arby's, or Sonic
+2. **Enter Store ID** - Specify location number
+3. **Choose Timeframe** - Select analysis period
+4. **Run Investigation** - Get comprehensive security analysis
+
+![Investigation Results](docs/images/investigation-results.png)
+*Sample investigation results showing security events, URL blocking, and recommendations*
+
+### Brand Management
+Each brand has dedicated views with:
+- **Infrastructure Status** - Device health and connectivity
+- **Security Overview** - Recent events and policy status
+- **Quick Actions** - Investigation tools and FortiManager access
+
+![Brand Management](docs/images/brand-management-tools.png)
+*Brand-specific management tools and quick action buttons*
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# FortiManager Configuration
+FM_BWW_HOST=10.128.145.4
+FM_BWW_USERNAME=your_username
+FM_BWW_PASSWORD=your_password
+
+FM_ARBYS_HOST=10.128.144.132
+FM_ARBYS_USERNAME=your_username
+FM_ARBYS_PASSWORD=your_password
+
+FM_SONIC_HOST=10.128.156.36
+FM_SONIC_USERNAME=your_username
+FM_SONIC_PASSWORD=your_password
+```
+
+### Voice Settings
+- **Speech Rate**: Adjustable 0.5x to 2.0x speed
+- **Volume**: Configurable audio levels
+- **Voice Selection**: Choose from available system voices
+- **Accessibility**: Screen reader and continuous listening modes
+
+## 📊 API Reference
+
+### Core Endpoints
+```bash
+GET /api/brands                           # List supported brands
+GET /api/brands/{brand}/overview           # Brand infrastructure overview
+GET /api/stores/{brand}/{id}/security      # Store security analysis
+GET /api/ltm/status                        # LTM Intelligence status
+POST /api/ltm/voice/command                # Process voice commands
+```
+
+### Response Format
 ```json
 {
-  "fortigate": [
-    {
-      "name": "FortiGate-Main",
-      "host": "192.168.1.99", 
-      "token": "your-api-token-here",
-      "description": "Main firewall"
+  "success": true,
+  "data": {
+    "brand_summary": {
+      "brand": "Buffalo Wild Wings",
+      "device_prefix": "IBR-BWW",
+      "total_stores": 347
+    },
+    "infrastructure_status": {
+      "fortimanager_host": "10.128.145.4",
+      "total_managed_devices": 342,
+      "online_devices": 338,
+      "offline_devices": 4
     }
-  ]
+  }
 }
 ```
 
-**To get FortiGate API token:**
-1. Login to FortiGate web interface
-2. Go to System > Administrators  
-3. Create new REST API Admin or edit existing
-4. Generate API token and copy it
+## 🧪 Testing & Development
 
-### FortiManager Configuration
-```json
-{
-  "fortimanager": [
-    {
-      "name": "FortiManager-Primary",
-      "host": "192.168.1.100",
-      "username": "admin", 
-      "password": "your-password-here",
-      "description": "Central management"
-    }
-  ]
-}
+### Run Tests
+```bash
+# Test core functionality
+python -m pytest tests/
+
+# Test API endpoints  
+python -c "
+import requests
+response = requests.get('http://localhost:5000/health')
+print(f'Health Check: {response.status_code}')
+"
+
+# Test voice integration
+# Navigate to http://localhost:5000 and enable voice controls
 ```
 
-### Meraki Configuration
-```json
-{
-  "meraki": [
-    {
-      "name": "Meraki-Dashboard",
-      "api_key": "your-meraki-api-key-here",
-      "org_id": "your-organization-id",
-      "description": "Cloud dashboard"
-    }
-  ]
-}
+### Development Mode
+```bash
+# Start with auto-reload
+python rest_api_server.py --debug
+
+# Monitor logs
+tail -f application.log
 ```
 
-**To get Meraki API key:**
-1. Login to Meraki Dashboard
-2. Go to Organization > Settings > Dashboard API access
-3. Enable API access and generate key
-4. Find your Organization ID in the URL or API
+## 📈 Performance & Monitoring
 
-## 🛠️ Available Tools
+### System Requirements
+- **RAM**: 2GB minimum, 4GB recommended
+- **CPU**: 2 cores minimum for voice processing
+- **Storage**: 1GB for logs and temporary files
+- **Network**: Stable connection to FortiManager instances
 
-### FortiGate Tools
-- `get_fortigate_system_status` - System info, CPU, memory, uptime
-- `get_fortigate_interfaces` - Network interface status and statistics  
-- `get_fortigate_policies` - Firewall policy configuration
-- `get_fortigate_vpn_status` - VPN tunnel status
-- `get_fortigate_security_events` - Recent security logs
+### Monitoring Features
+- **Real-time status displays** with connection health
+- **Performance metrics** for voice processing
+- **Error logging** with detailed troubleshooting info
+- **Usage analytics** for voice command patterns
 
-### FortiManager Tools  
-- `get_fortimanager_devices` - List all managed devices
-- `get_fortimanager_adoms` - Administrative domains
-- `install_fortimanager_policy` - Push policies to devices
-- `get_policy_packages` - Available policy packages
+![System Monitoring](docs/images/system-monitoring.png)
+*Real-time system monitoring and performance metrics*
 
-### Meraki Tools
-- `get_meraki_organizations` - Your Meraki organizations
-- `get_meraki_networks` - Networks in organization
-- `get_meraki_devices` - Devices in network  
-- `get_meraki_device_status` - Device online/offline status
-- `update_meraki_device` - Update device configuration
-- `get_network_clients` - Connected clients
-- `get_security_events` - Security event logs
+## 🔐 Security & Compliance
 
-### Multi-Platform Tools
-- `get_network_summary` - Unified status across all platforms
+### Security Features
+- **Encrypted communications** with FortiManager
+- **Credential management** via environment variables
+- **Session management** with timeout controls
+- **Audit logging** for all administrative actions
 
-## 🔗 Power Automate Integration
+### Compliance
+- **WCAG 2.1 AA** accessibility standards
+- **Enterprise security** best practices
+- **Data protection** with local processing
+- **No external dependencies** for sensitive operations
 
-### Method 1: File-Based Integration
-```python
-# Example: Export device status to file for Power Automate monitoring
-async def export_status_for_pa():
-    status = await get_network_summary()
-    with open('C:/temp/network_status.json', 'w') as f:
-        json.dump(status, f)
+## 🚀 Deployment
+
+### Production Deployment
+```bash
+# Use process manager
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 rest_api_server:app
+
+# Or use systemd service
+sudo cp deploy/network-management.service /etc/systemd/system/
+sudo systemctl enable network-management
+sudo systemctl start network-management
 ```
 
-### Method 2: REST API Wrapper
-Create a simple Flask wrapper around MCP tools:
-```python
-from flask import Flask, jsonify
-app = Flask(__name__)
-
-@app.route('/api/network/status')
-def get_status():
-    # Call MCP tools and return results
-    return jsonify(network_status)
+### Docker Deployment
+```dockerfile
+FROM python:3.9-alpine
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD ["python", "rest_api_server.py"]
 ```
 
-### Method 3: Database Integration
-- Export data to SQL Server/Excel
-- Power Automate reads from shared database
-- Trigger workflows based on device status changes
+## 📄 License
 
-## 📊 Example Use Cases
+This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
 
-### Device Health Monitoring
-```plaintext
-Claude: "Show me the status of all FortiGate devices"
-MCP Server: Returns system status, CPU, memory for all devices
-Power Automate: Triggers alert if CPU > 80%
-```
+## 🤝 Contributing
 
-### Policy Deployment
-```plaintext
-Claude: "Install the 'Guest_Access' policy to all branch firewalls"  
-MCP Server: Uses FortiManager to push policy
-Power Automate: Sends deployment confirmation email
-```
-
-### Network Inventory
-```plaintext
-Claude: "Generate a report of all Meraki devices"
-MCP Server: Collects device info from all networks
-Power Automate: Creates Excel report and emails to team
-```
-
-## 🚨 Troubleshooting
-
-### Common Issues
-
-**"Module not found" errors:**
-```cmd
-# Ensure virtual environment is activated
-venv\Scripts\activate.bat
-pip install -r requirements.txt
-```
-
-**"Connection refused" errors:**
-- Check device IP addresses and network connectivity
-- Verify API credentials are correct
-- Ensure devices allow API access from your IP
-
-**Claude Desktop doesn't show tools:**
-- Restart Claude Desktop completely
-- Check `%APPDATA%\Claude\claude_desktop_config.json` 
-- Run `test-server.bat` to verify server starts
-
-**FortiGate API issues:**
-- Enable REST API in System > Feature Visibility
-- Check API admin user has proper permissions
-- Verify HTTPS certificate settings
-
-**Meraki API issues:**  
-- Ensure API access is enabled in organization settings
-- Check API key has proper permissions
-- Verify organization ID is correct
-
-### Debug Mode
-Enable detailed logging by setting environment variable:
-```cmd
-set MCP_LOG_LEVEL=DEBUG
-python src\main.py
-```
-
-### Logs Location
-- Server logs: `logs/network-mcp-server.log`
-- Claude MCP logs: `%LOCALAPPDATA%\Claude\logs\`
-
-## 🔐 Security Best Practices
-
-1. **Use dedicated API accounts** with minimal required permissions
-2. **Store credentials securely** - consider using environment variables
-3. **Enable firewall rules** to restrict API access to your IP
-4. **Regularly rotate API keys** and tokens
-5. **Monitor API usage** for suspicious activity
-6. **Use HTTPS only** for all API communications
-
-## 📈 Advanced Features
-
-### Custom Device Types
-Extend the server to support additional devices:
-```python
-# Add new platform module in src/platforms/
-class CustomDeviceManager:
-    async def get_device_status(self, host, credentials):
-        # Implement your device API calls
-        pass
-```
-
-### Automated Backups
-Schedule configuration backups:
-```python
-# Example backup automation
-@scheduler.scheduled_job('cron', hour=2)  # Run daily at 2 AM
-async def backup_all_configs():
-    for device in fortigate_devices:
-        config = await backup_config(device)
-        save_backup(config, device['name'])
-```
-
-### Custom Reporting
-Generate tailored reports for your environment:
-```python
-async def generate_security_report():
-    events = await get_all_security_events()
-    threats = analyze_threat_patterns(events)
-    return create_executive_summary(threats)
-```
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
 
 ## 📞 Support
 
-### Getting Help
-1. Check the troubleshooting section above
-2. Review logs for specific error messages
-3. Test individual components with `test-server.bat`
-4. Verify network connectivity to your devices
-
-### Feature Requests
-This MCP server is designed to be extensible. Common enhancement requests:
-- Additional device platform support
-- Custom reporting templates  
-- Automated remediation actions
-- Integration with SIEM systems
-- Mobile device management
-
-## 🎯 Integration with Your Existing Projects
-
-Based on your directory structure, you already have several Fortinet projects:
-- `fortigatevlans/` - Can integrate VLAN management
-- `fortigate-troubleshooter/` - Can incorporate troubleshooting workflows  
-- `fortimanagerdashboard/` - Can extend with MCP capabilities
-- `meraki_visualizations/` - Can add MCP data sources
-
-The MCP server can serve as a unified API layer across all these projects!
+- **Issues**: GitHub Issues page
+- **Documentation**: README and code comments
+- **Email**: network-team@yourcompany.com
 
 ---
 
-## 📄 License
-MIT License - Feel free to modify and extend for your needs.
+**🌐 The world's first voice-enabled AI-powered restaurant network management platform!**
 
-Built for network administrators who want to automate device management and integrate with modern AI tools like Claude and Power Automate.
-=======
-"# Network Device MCP Server" 
->>>>>>> 1b9d93f (first commit)
+![Footer Banner](docs/images/platform-banner.png)
+*Professional network operations center for the modern restaurant industry*
